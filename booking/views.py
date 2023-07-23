@@ -6,7 +6,7 @@ from rest_framework import generics
 from .serializers import CarSerializer
 
 
-
+# Car booking
 def booking(request):
 	form = BookingForm(request.POST or None)
 	if request.method == "POST":
@@ -15,6 +15,7 @@ def booking(request):
 			messages.success(request, "Car Booking Added...")
 	return render(request, 'booking.html', {'form':form})
 
+# show all records
 def show_bookings(request, booking_number=None):
     if booking_number:
         bookings = BookingModel.objects.filter(booking_number=booking_number)
@@ -23,6 +24,7 @@ def show_bookings(request, booking_number=None):
 
     return render(request, 'show_booking.html', {'bookings': bookings})
 
+# add car return and calculate rent
 def car_return(request, booking_number):
     booking = BookingModel.objects.get(booking_number=booking_number)
 
@@ -47,12 +49,10 @@ def car_return(request, booking_number):
                 rental_price = baseDayRental * numberOfDays * 1.7 + (kilometerPrice * numberOfKilometers * 1.5)
             else:
                 rental_price = 0
-                print('else')
 
             instance.rental_price = rental_price
-            print(rental_price)
             instance.save()
-            context = {'Rental Price': rental_price,'Number Of Days':numberOfDays,'Number Of Kilometers':numberOfKilometers,'baseDayRental':baseDayRental,'kilometerPrice':kilometerPrice}
+            context = {'Booking Number':booking.booking_number,'Customer Name':booking.customer_name,'Car Category':booking.car_category,'Rental Price': rental_price,'Number Of Days':numberOfDays,'Number Of Kilometers':numberOfKilometers,'baseDayRental':baseDayRental,'kilometerPrice':kilometerPrice}
             return render(request, 'success.html', {'context': context})    
 
     else:
@@ -60,6 +60,7 @@ def car_return(request, booking_number):
 
     return render(request, 'booking.html', {'form': form})       
   
+# Rest Api to create car category
 class AddCarCategory(generics.CreateAPIView):
     queryset = BookingModel.objects.all()
     serializer_class = CarSerializer

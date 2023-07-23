@@ -20,4 +20,4 @@ class BookingModel(models.Model):
     rental_price = models.DecimalField(max_digits=10, decimal_places=2,null=True)
 
     def __str__(self):
-            return f"Booking: {self.booking_number} - {self.customer_name}"
+            return {'booking_number':self.booking_number,'customer_name':self.customer_name,'car_category':self.car_category}

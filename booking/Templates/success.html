@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Template</title>
+    <title>Car Rent</title>
 </head>
 <body>
-    <h1>{{ context }}</h1>
+    <h1>Total</h1>
+    {% for key, value in context.items %}
+        <ol>{{ key }}: {{ value }}</ol>
+    {% endfor %}
     <a href="{% url 'booking' %}">New Booking</a>
     <a href="{% url 'show_bookings' %}">Show All Bookings</a>
-    <h3>baseDayRental: 90</h3>
-    <h3>kilometerPrice: 15</h3>
 </body>
 </html>
