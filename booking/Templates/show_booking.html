@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bookings</title>
+</head>
+<body>
+    <h1>All Bookings</h1>
+    <a href="{% url 'booking' %}">New Booking</a><br><br>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding-top: 10px;
+          padding-bottom: 20px;
+          padding-left: 30px;
+          padding-right: 40px;
+        }
+        </style>
+    <table>
+        <thead>
+            <tr colspan="2">
+                <th>Booking Number</th>
+                <th>Customer Name</th>
+                <th>Car Category</th>
+                <th>Rental Date and Time</th>
+                <th>Car Mileage at Pick-up</th>
+                <th>Return Datetime</th>
+                <th>Car Mileage Return</th>
+                <th>Rental Price</th>
+                <th>Return</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.booking_number }}</td>
+                <td>{{ booking.customer_name }}</td>
+                <td>{{ booking.car_category }}</td>
+                <td>{{ booking.rental_datetime }}</td>
+                <td>{{ booking.car_mileage_request }}</td>
+                <td>{{ booking.return_datetime }}</td>
+                <td>{{ booking.car_mileage_return }}</td>
+                <td>{{ booking.rental_price }}</td>
+                <td><a href="{% url 'car_return' booking.booking_number %}">Return</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

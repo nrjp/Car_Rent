@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Booking Form</title>
+</head>
+<body>
+    <h1>Car Booking Form</h1>
+    <a href="{% url 'show_bookings' %}">Show All Bookings</a>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </form>
+</body>
+</html>
