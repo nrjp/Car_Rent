@@ -128,8 +128,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates').replace('\\','/')],
-        # 'DIRS': [],
+        'DIRS': ['Templates],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,3 +140,8 @@ TEMPLATES = [
         },
     },
 ]
+SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
+# Find templates in the same folder as settings.py.
+TEMPLATE_DIRS = (
+    os.path.join(SETTINGS_PATH, 'templates'),
+)
