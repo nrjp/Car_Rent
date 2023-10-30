@@ -4,8 +4,9 @@ from django.contrib import messages
 from .models import BookingModel
 from rest_framework import generics
 from .serializers import CarSerializer
+import logging
 
-
+logger = logging.getLogger("main")
 # Car booking
 def booking(request):
 	form = BookingForm(request.POST or None)
@@ -17,6 +18,7 @@ def booking(request):
 
 # show all records
 def show_bookings(request, booking_number=None):
+    logger.error('hello')
     if booking_number:
         bookings = BookingModel.objects.filter(booking_number=booking_number)
     else:
