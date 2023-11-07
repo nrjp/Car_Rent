@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import datetime
 
-    
 class CarCategory(models.Model):
      category = models.CharField(unique=True, max_length=100)
 

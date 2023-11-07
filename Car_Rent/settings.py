@@ -9,8 +9,15 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+from decouple import config
 from pathlib import Path
+import environ
+import os
+
+import environ
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*aewfx9&2@iyp*g$p)r)lx_72+)06dxnd5k!=lhdi=f^adv0=7'
-
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = ['3.83.242.18']
+# ALLOWED_HOSTS = [ ]
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 # Application definition
@@ -39,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'booking',
     'rest_framework'
-]
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,7 +88,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('NAME)
+#         'USER': env('USER),
+#         'PASSWORD': env('PASSWORD),
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -141,54 +157,36 @@ TEMPLATES = [
 ]
 
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{debug} {asctime} {module} {process:d} {thread:d} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{debug} {message}",
-            "style": "{",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs.log',
         },
     },
-    "filters": {
-        # "special": {
-        #     "()": "project.logging.SpecialFilter",
-        #     "foo": "bar",
-        # },
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
-    },
-    "handlers": {
-        "console": {
-            "level": "INFO",
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
-        },
-        # "mail_admins": {
-        #     "level": "ERROR",
-        #     "class": "django.utils.log.AdminEmailHandler",
-        #     "filters": ["special"],
-        # },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "propagate": True,
-        },
-        # "django.request": {
-        #     "handlers": ["mail_admins"],
-        #     "level": "ERROR",
-        #     "propagate": False,
-        # },
-        # "myproject.custom": {
-        #     "handlers": ["console", "mail_admins"],
-        #     "level": "INFO",
-        #     "filters": ["special"],
-        # },
     },
 }
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+
+## Email config
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-mail.outlook.com'  
+EMAIL_PORT = 587  
+
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS') 
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')  
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')  

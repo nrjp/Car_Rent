@@ -66,3 +66,23 @@ def car_return(request, booking_number):
 class AddCarCategory(generics.CreateAPIView):
     queryset = BookingModel.objects.all()
     serializer_class = CarSerializer
+
+
+# signals
+
+from django.http import HttpResponse
+from .signals import custom_signal
+
+def trigger_signal(request):
+    # Trigger the custom signal
+    custom_signal.send(sender=None)
+    return HttpResponse("Signal triggered. Check the console for 'Hello' message.")
+
+# summarizer/views.py
+from django.http import JsonResponse
+from .tasks import summarize_text
+
+def summarize_view(request):
+    text = "This is a long text that needs summarization..."
+    task = summarize_text.delay(text)
+    return JsonResponse({'task_id': task.id})
